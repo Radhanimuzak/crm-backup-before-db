@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>New User Registration</title>
+
+<style>
+
+body{
+margin:0;
+padding:0;
+background:#f4f6fb;
+font-family:Arial, sans-serif;
+}
+
+.wrapper{
+width:100%;
+padding:40px 0;
+}
+
+.container{
+max-width:620px;
+margin:auto;
+background:white;
+border-radius:10px;
+box-shadow:0 8px 30px rgba(0,0,0,0.08);
+padding:40px;
+}
+
+.header{
+font-size:22px;
+font-weight:bold;
+color:#2a2f5b;
+margin-bottom:10px;
+}
+
+.subtitle{
+color:#555;
+font-size:14px;
+line-height:1.6;
+margin-bottom:25px;
+}
+
+.user-box{
+background:#f8f9fc;
+border-radius:8px;
+padding:20px;
+margin-top:20px;
+border:1px solid #eee;
+}
+
+.user-box p{
+margin:8px 0;
+font-size:14px;
+color:#333;
+}
+
+.btn-wrapper{
+margin-top:30px;
+text-align:left;
+}
+
+.btn{
+display:inline-block;
+background:#2a2f5b;
+color:#ffffff !important;
+padding:14px 28px;
+border-radius:6px;
+font-weight:500;
+text-decoration:none;
+font-size:14px;
+}
+
+.footer{
+margin-top:30px;
+font-size:12px;
+color:#888;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<div class="container">
+
+<div class="header">
+New User Registration
+</div>
+
+<div class="subtitle">
+A new user has registered in the system and is waiting for the administrator to assign a role.
+Please review the user information below.
+</div>
+
+<div class="user-box">
+
+<p><strong>Username:</strong> {{username}}</p>
+
+<p><strong>Full Name:</strong> {{fullname}}</p>
+
+<p><strong>Email:</strong> {{email}}</p>
+
+<p><strong>Mobile Number:</strong> {{mobile}}</p>
+
+<p><strong>Position:</strong> {{position}}</p>
+
+<p><strong>Division:</strong> {{division}}</p>
+
+<p><strong>Unit:</strong> {{unit}}</p>
+
+</div>
+
+<div class="btn-wrapper">
+
+<a href="{{assign_link}}" class="btn">
+Review Registration
+</a>
+
+</div>
+
+<div class="footer">
+
+CRM System Notification
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
