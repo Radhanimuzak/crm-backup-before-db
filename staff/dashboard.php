@@ -1,294 +1,210 @@
+<?php
+session_start(); 
+/* MULA PROGRAM
+   Fungsi:
+   - Mulakan session PHP
+   - Digunakan untuk simpan data user (login, role, dll)
+   Input:
+   - Data session sedia ada (jika ada)
+   Output:
+   - Session aktif untuk digunakan sepanjang sistem
+   Flow:
+   Browser → PHP → Session server disambung */
+
+
+/* =========================
+   ROLE CHECK
+========================= */
+$required_role = 3; 
+/* Tetapkan role yang diperlukan
+   Fungsi:
+   - Tentukan hanya user dengan role = 3 boleh akses page ini
+   Input:
+   - Nilai tetap (3)
+   Output:
+   - Digunakan oleh auth-check.php untuk validasi */
+
+require "../config/auth-check.php"; 
+/* Panggil fail auth-check.php
+   Lokasi:
+   - ../config/auth-check.php
+   Fungsi:
+   - Semak sama ada user sudah login
+   - Semak sama ada role user sama dengan $required_role
+   Input:
+   - Data session (contoh: user_id, role)
+   - $required_role (3)
+   Proses:
+   - Jika tidak login → redirect ke login page
+   - Jika role tidak sama → block / redirect
+   Output:
+   - User dibenarkan akses page ini jika lulus
+   Flow:
+   Session → auth-check.php → validasi → (lulus/gagal) */
+
+/* =========================
+   DATABASE
+========================= */
+require "../config/database.php"; 
+/* Panggil sambungan database
+   Lokasi:
+   - ../config/database.php
+   Fungsi:
+   - Sambungkan sistem ke database (MySQL / lain)
+   Input:
+   - Config database (host, username, password, db name)
+   Proses:
+   - Create connection (mysqli / PDO)
+   Output:
+   - Connection database (contoh: $conn)
+   Flow:
+   PHP file ini → database.php → sambung DB → boleh query data */
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+<!-- MULA HTML
+     Fungsi:
+     - Struktur asas halaman web (dashboard staff)
+     Flow:
+     Browser → load HTML → render UI -->
+
 <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Pastikan compatibility dengan browser lama -->
 
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>Staff Dashboard</title>
+    <title>Staff Dashboard</title>
+    <!-- Tajuk tab browser -->
 
-<meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <!-- Responsive untuk semua device -->
 
-<!-- BIARKAN FAVICON XAMPP -->
-<!-- <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon"/> -->
+    <!-- FONT ICON -->
+    <script src="/kaiadmin-lite-1.2.0/assets/js/plugin/webfont/webfont.min.js"></script>
+    <!-- Ambil library WebFont dari folder assets -->
 
-<!-- Fonts -->
-<script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+        WebFont.load({
+            google: { families: ["Public Sans:300,400,500,600,700"] },
+            /* Ambil font dari Google */
 
-<script>
-WebFont.load({
-google:{families:["Public Sans:300,400,500,600,700"]},
-custom:{
-families:[
-"Font Awesome 5 Solid",
-"Font Awesome 5 Regular",
-"Font Awesome 5 Brands",
-"simple-line-icons"
-],
-urls:["../assets/css/fonts.min.css"]
-},
-active:function(){
-sessionStorage.fonts=true;
-}
-});
-</script>
+            custom: {
+                families: [
+                    "Font Awesome 5 Solid",
+                    "Font Awesome 5 Regular",
+                    "Font Awesome 5 Brands",
+                    "simple-line-icons"
+                ],
+                urls: ["/kaiadmin-lite-1.2.0/assets/css/fonts.min.css"]
+                /* Ambil icon dari file local (fonts.min.css) */
+            },
 
-<link rel="stylesheet" href="../assets/css/bootstrap.min.css"/>
-<link rel="stylesheet" href="../assets/css/plugins.min.css"/>
-<link rel="stylesheet" href="../assets/css/kaiadmin.min.css"/>
+            active: function () {
+                sessionStorage.fonts = true;
+            }
+            /* Simpan status font dalam session browser */
+        });
+    </script>
 
-<style>
-
-/* LOGO STYLE SAMA SEMUA ROLE */
-
-.logo-header{
-height:95px;
-display:flex;
-align-items:center;
-justify-content:flex-start;
-padding-left:20px;
-position:relative;
-}
-
-.logo-header .logo img{
-height:48px;
-transform:scale(1.6);
-transform-origin:left center;
-}
-
-/* SIDEBAR STYLE */
-
-.sidebar{
-background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%);
-}
-
-.sidebar .nav > .nav-item > a{
-border-radius:8px;
-margin:4px 8px;
-}
-
-.sidebar .nav > .nav-item.active > a{
-background:rgba(255,255,255,0.08);
-}
-
-</style>
-
+    <!-- CSS -->
+    <link rel="stylesheet" href="/kaiadmin-lite-1.2.0/assets/css/bootstrap.min.css"/>
+    <!-- Framework UI (layout, grid, button) -->
+    <link rel="stylesheet" href="/kaiadmin-lite-1.2.0/assets/css/plugins.min.css"/>
+    <!-- Plugin tambahan (scroll, animation, dll) -->
+    <link rel="stylesheet" href="/kaiadmin-lite-1.2.0/assets/css/kaiadmin.min.css"/>
+    <!-- Style utama dashboard -->
 </head>
 
 <body>
+<!-- MULA BODY
+     Fungsi:
+     - Paparkan semua UI kepada user -->
 
 <div class="wrapper">
+    <!-- Wrapper utama seluruh layout -->
 
-<!-- SIDEBAR -->
-<div class="sidebar" data-background-color="dark">
+    <!-- ================= SIDEBAR ================= -->
+    <?php include "../includes/sidebar.php"; ?>
+    <!-- Ambil sidebar dari:
+         ../includes/sidebar.php
+         Fungsi:
+         - Menu navigasi (dashboard, user, dll)
+         Flow:
+         Page ini → include sidebar → paparkan menu -->
 
-<div class="sidebar-logo">
+    <div class="main-panel">
+        <!-- Panel utama content -->
 
-<div class="logo-header" data-background-color="dark">
+        <!-- ================= TOPBAR ================= -->
+        <?php include "../includes/topbar.php"; ?>
+        <!-- Ambil topbar dari:
+             ../includes/topbar.php
+             Fungsi:
+             - Header (profile, logout, notification)
+             Flow:
+             Page → include topbar → paparan header -->
 
-<a href="dashboard.php" class="logo">
-<img src="../assets/img/logo_crm.png" alt="CRM Logo">
-</a>
+        <!-- ================= CONTENT ================= -->
+        <div class="container">
+            <!-- Container content utama -->
 
-<div class="nav-toggle">
+            <div class="page-inner">
+                <!-- Inner layout untuk spacing -->
 
-<button class="btn btn-toggle toggle-sidebar">
-<i class="gg-menu-right"></i>
-</button>
+                <h4 class="page-title">Staff Dashboard</h4>
+                <!-- Tajuk halaman -->
 
-<button class="btn btn-toggle sidenav-toggler">
-<i class="gg-menu-left"></i>
-</button>
+                <div class="card">
+                    <!-- Card UI -->
 
-</div>
+                    <div class="card-body text-center">
+                        <!-- Isi card -->
 
-<button class="topbar-toggler more">
-<i class="gg-more-vertical-alt"></i>
-</button>
+                        <h3>Welcome to CRM Staff</h3>
+                        <!-- Tajuk content -->
 
-</div>
+                        <p class="text-muted">
+                            Staff dashboard will display assigned tasks and customers.
+                        </p>
+                        <!-- Penerangan fungsi dashboard -->
 
-</div>
+                    </div>
+                </div>
 
-<div class="sidebar-wrapper scrollbar scrollbar-inner">
+            </div>
+        </div>
 
-<div class="sidebar-content">
+        <!-- ================= FOOTER ================= -->
+        <footer class="footer">
+            <div class="container-fluid">
+                CRM System Dashboard
+            </div>
+        </footer>
+        <!-- Footer bawah page -->
 
-<ul class="nav nav-secondary">
-
-<li class="nav-item active">
-<a href="dashboard.php">
-<i class="fas fa-home"></i>
-<p>Dashboard</p>
-</a>
-</li>
-
-<li class="nav-item">
-<a href="#">
-<i class="fas fa-tasks"></i>
-<p>My Tasks</p>
-</a>
-</li>
-
-<li class="nav-item">
-<a href="#">
-<i class="fas fa-user-friends"></i>
-<p>My Customers</p>
-</a>
-</li>
-
-<li class="nav-item">
-<a href="../auth/login.php">
-<i class="fas fa-sign-out-alt"></i>
-<p>Logout</p>
-</a>
-</li>
-
-</ul>
+    </div>
 
 </div>
 
-</div>
+<!-- ================= JS ================= -->
+<script src="/kaiadmin-lite-1.2.0/assets/js/core/jquery-3.7.1.min.js"></script>
+<!-- Library utama (jQuery) -->
 
-</div>
-<!-- END SIDEBAR -->
+<script src="/kaiadmin-lite-1.2.0/assets/js/core/popper.min.js"></script>
+<!-- Untuk tooltip / dropdown -->
 
+<script src="/kaiadmin-lite-1.2.0/assets/js/core/bootstrap.min.js"></script>
+<!-- Function Bootstrap (modal, button, dll) -->
 
-<!-- MAIN PANEL -->
-<div class="main-panel">                                                                                                                                        
+<script src="/kaiadmin-lite-1.2.0/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<!-- Custom scrollbar -->
 
-<div class="main-header">
-
-<nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-
-<div class="container-fluid">
-
-<!-- SEARCH -->
-<nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
-
-<div class="input-group">
-
-<div class="input-group-prepend">
-<button type="submit" class="btn btn-search pe-1">
-<i class="fa fa-search search-icon"></i>
-</button>
-</div>
-
-<input
-type="text"
-placeholder="Search ..."
-class="form-control"
-/>
-
-</div>
-
-</nav>
-
-<ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-
-<li class="nav-item topbar-user dropdown hidden-caret">
-
-<a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#">
-
-<div class="avatar-sm">
-<img src="../assets/img/profile.jpg" class="avatar-img rounded-circle"/>
-</div>
-
-<span class="profile-username">
-<span class="op-7">Hi,</span>
-<span class="fw-bold">Staff</span>
-</span>
-
-</a>
-
-</li>
-
-</ul>
-
-</div>
-
-</nav>
-
-</div>
-
-
-<!-- CONTENT -->
-<div class="container">
-
-<div class="page-inner">
-
-<div class="page-header">
-
-<h4 class="page-title">Staff Dashboard</h4>
-
-<ul class="breadcrumbs">
-
-<li class="nav-home">
-<i class="icon-home"></i>
-</li>
-
-<li class="separator">
-<i class="icon-arrow-right"></i>
-</li>
-
-<li class="nav-item">
-Staff
-</li>
-
-<li class="separator">
-<i class="icon-arrow-right"></i>
-</li>
-
-<li class="nav-item">
-Dashboard
-</li>
-
-</ul>
-
-</div>
-
-
-<!-- STAFF CONTENT -->
-
-<div class="card">
-
-<div class="card-body text-center">
-
-<h3>Welcome to CRM Staff</h3>
-
-<p class="text-muted">
-Staff dashboard will display assigned tasks and customers.
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<footer class="footer">
-
-<div class="container-fluid d-flex justify-content-between">
-
-<div class="copyright">
-CRM System Dashboard
-</div>
-
-</div>
-
-</footer>
-
-</div>
-
-</div>
-
-
-<script src="../assets/js/core/jquery-3.7.1.min.js"></script>
-<script src="../assets/js/core/popper.min.js"></script>
-<script src="../assets/js/core/bootstrap.min.js"></script>
-<script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-<script src="../assets/js/kaiadmin.min.js"></script>
+<script src="/kaiadmin-lite-1.2.0/assets/js/kaiadmin.min.js"></script>
+<!-- Script utama dashboard -->
 
 </body>
 </html>
+<!-- TAMAT HTML
+     END:
+     - Semua UI siap render
+     - JS aktifkan interaksi-->

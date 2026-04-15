@@ -1,137 +1,138 @@
-<!DOCTYPE html>
+<!DOCTYPE html> <!-- START: Struktur dokumen HTML, email template bermula di sini -->
 <html>
 <head>
 
-<meta charset="UTF-8">
-<title>New User Registration</title>
+<meta charset="UTF-8"> <!-- Set encoding supaya support semua karakter -->
+<title>New User Registration</title> <!-- Tajuk email (dipaparkan di email client) -->
 
 <style>
 
 body{
-margin:0;
-padding:0;
-background:#f4f6fb;
-font-family:Arial, sans-serif;
+margin:0; /* buang default margin browser */
+padding:0; /* buang default padding */
+background:#f4f6fb; /* background luar email */
+font-family:Arial, sans-serif; /* font standard email */
 }
 
 .wrapper{
-width:100%;
-padding:40px 0;
+width:100%; /* full lebar email */
+padding:40px 0; /* jarak atas bawah */
 }
 
 .container{
-max-width:620px;
-margin:auto;
-background:white;
-border-radius:10px;
-box-shadow:0 8px 30px rgba(0,0,0,0.08);
-padding:40px;
+max-width:620px; /* max lebar content email */
+margin:auto; /* center tengah */
+background:white; /* background content */
+border-radius:10px; /* sudut bulat */
+box-shadow:0 8px 30px rgba(0,0,0,0.08); /* shadow ringan */
+padding:40px; /* ruang dalam */
 }
 
 .header{
-font-size:22px;
-font-weight:bold;
-color:#2a2f5b;
-margin-bottom:10px;
+font-size:22px; /* size tajuk */
+font-weight:bold; /* bold */
+color:#2a2f5b; /* warna utama */
+margin-bottom:10px; /* jarak bawah */
 }
 
 .subtitle{
-color:#555;
-font-size:14px;
-line-height:1.6;
-margin-bottom:25px;
+color:#555; /* warna text */
+font-size:14px; /* size kecil */
+line-height:1.6; /* jarak line */
+margin-bottom:25px; /* jarak bawah */
 }
 
 .user-box{
-background:#f8f9fc;
-border-radius:8px;
-padding:20px;
-margin-top:20px;
-border:1px solid #eee;
+background:#f8f9fc; /* box info user */
+border-radius:8px; /* sudut bulat */
+padding:20px; /* ruang dalam */
+margin-top:20px; /* jarak atas */
+border:1px solid #eee; /* border ringan */
 }
 
 .user-box p{
-margin:8px 0;
-font-size:14px;
-color:#333;
+margin:8px 0; /* jarak setiap line */
+font-size:14px; /* size text */
+color:#333; /* warna text */
 }
 
 .btn-wrapper{
-margin-top:30px;
-text-align:left;
+margin-top:30px; /* jarak atas button */
+text-align:left; /* posisi button kiri */
 }
 
 .btn{
-display:inline-block;
-background:#2a2f5b;
-color:#ffffff !important;
-padding:14px 28px;
-border-radius:6px;
-font-weight:500;
-text-decoration:none;
-font-size:14px;
+display:inline-block; /* supaya jadi button */
+background:#2a2f5b; /* warna button */
+color:#ffffff !important; /* warna text button */
+padding:14px 28px; /* size button */
+border-radius:6px; /* sudut bulat */
+font-weight:500; /* tebal sederhana */
+text-decoration:none; /* hilang underline */
+font-size:14px; /* size text */
 }
 
 .footer{
-margin-top:30px;
-font-size:12px;
-color:#888;
+margin-top:30px; /* jarak atas footer */
+font-size:12px; /* kecil */
+color:#888; /* warna abu */
 }
 
 </style>
 
 </head>
 
-<body>
+<body> <!-- START BODY EMAIL -->
 
-<div class="wrapper">
+<div class="wrapper"> <!-- WRAPPER UTAMA -->
 
-<div class="container">
+    <div class="container"> <!-- CONTAINER ISI EMAIL -->
 
-<div class="header">
-New User Registration
-</div>
+        <div class="header">
+            New User Registration <!-- TAJUK EMAIL -->
+        </div>
 
-<div class="subtitle">
-A new user has registered in the system and is waiting for the administrator to assign a role.
-Please review the user information below.
-</div>
+        <div class="subtitle">
+            A new user has registered in the system and is waiting for the administrator to assign a role.
+            <!-- DESKRIPSI: maklumat ke admin bahawa ada user baru -->
+        </div>
 
-<div class="user-box">
+        <div class="user-box"> <!-- BOX DATA USER -->
 
-<p><strong>Username:</strong> {{username}}</p>
+            <p><strong>Username:</strong> {{username}}</p> <!-- INPUT dari backend: username user baru -->
+            <p><strong>Full Name:</strong> {{fullname}}</p> <!-- INPUT dari backend -->
+            <p><strong>Email:</strong> {{email}}</p> <!-- INPUT dari backend -->
+            <p><strong>Mobile Number:</strong> {{mobile}}</p> <!-- INPUT dari backend -->
+            <p><strong>Position:</strong> {{position}}</p> <!-- INPUT dari backend -->
+            <p><strong>Division:</strong> {{division}}</p> <!-- INPUT dari backend -->
+            <p><strong>Unit:</strong> {{unit}}</p> <!-- INPUT dari backend -->
 
-<p><strong>Full Name:</strong> {{fullname}}</p>
+            <!-- NOTE:
+            {{ }} ini bukan HTML asli
+            ini placeholder → akan diganti oleh PHP / backend sebelum email dihantar
+            -->
+        </div>
 
-<p><strong>Email:</strong> {{email}}</p>
+        <div class="btn-wrapper">
 
-<p><strong>Mobile Number:</strong> {{mobile}}</p>
+            <a href="{{assign_link}}" class="btn">
+                Assign Role
+            </a>
+            <!-- LINK ACTION:
+                 {{assign_link}} = URL dari backend
+                 contoh: http://domain.com/admin/assign-role.php?user_id=123
+                 
+                 bila admin klik → pergi ke page assign role -->
 
-<p><strong>Position:</strong> {{position}}</p>
+        </div>
 
-<p><strong>Division:</strong> {{division}}</p>
+        <div class="footer">
+            CRM System Notification <!-- FOOTER -->
+        </div>
 
-<p><strong>Unit:</strong> {{unit}}</p>
-
-</div>
-
-<div class="btn-wrapper">
-
-<a href="{{assign_link}}" class="btn">
-Review Registration
-</a>
-
-</div>
-
-<div class="footer">
-
-CRM System Notification
-
-</div>
-
-</div>
+    </div>
 
 </div>
 
 </body>
-</html>
+</html> <!-- END: Template email tamat di sini -->
