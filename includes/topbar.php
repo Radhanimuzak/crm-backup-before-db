@@ -33,12 +33,12 @@ $notifQuery = null;
 if($role == 1){
     // hanya ADMIN (role=1)
 
-    $notifQuery = mysqli_query($conn, "
+        $notifQuery = mysqli_query($conn, "
         SELECT user_id, user_name
         FROM users
-        WHERE user_status='inactive'
+        WHERE role_id IS NULL
         ORDER BY created_at DESC
-    ");
+        ");
     // ambil user belum aktif
     // FLOW: DB users → filter inactive → simpan dalam $notifQuery
 
@@ -96,78 +96,83 @@ if($role == 1){
 
                 <!-- ================= NOTIF START ================= -->
                 <?php if($role == 1): ?>
-                <!-- hanya admin nampak -->
 
                 <li class="nav-item topbar-icon dropdown hidden-caret">
 
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">
+                    <a class="nav-link dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                    href="#">
+
                         <i class="fa fa-bell"></i>
 
                         <?php if ($notifCount > 0): ?>
-                            <span class="notification"><?= $notifCount; ?></span>
-                            <!-- papar jumlah notif -->
+                            <span class="notification">
+                                <?= $notifCount; ?>
+                            </span>
                         <?php endif; ?>
+
                     </a>
 
-                    <ul class="dropdown-menu notif-box animated fadeIn"
-                        style="right: 0; left: auto; transform: translate3d(0, 40px, 0);">
-                    <!-- dropdown notif -->
+                    <ul class="dropdown-menu notif-box animated fadeIn">
 
                         <li>
                             <div class="dropdown-title">
-                                You have <?= $notifCount; ?> users waiting
-                                <!-- ambil dari $notifCount -->
+                                You have <?= $notifCount; ?> new messages
                             </div>
                         </li>
 
                         <li>
                             <div class="notif-scroll scrollbar-outer">
-
                                 <div class="notif-center">
 
-                                    <?php if($notifQuery && mysqli_num_rows($notifQuery) > 0): ?>
-                                    <!-- semak ada data -->
+                                <?php if($notifQuery && mysqli_num_rows($notifQuery) > 0): ?>
 
-                                        <?php while ($n = mysqli_fetch_assoc($notifQuery)): ?>
-                                        <!-- LOOP data user inactive -->
+                                    <?php while($n = mysqli_fetch_assoc($notifQuery)): ?>
 
-                                            <a href="/kaiadmin-lite-1.2.0/admin/user-role-assignment.php?user_id=<?= $n['user_id']; ?>">
-                                            <!-- FLOW PENTING:
-                                                 klik → hantar user_id (GET)
-                                                 → pergi ke user-role-assignment.php
-                                                 → proses approve user -->
+                                    <a href="/kaiadmin-lite-1.2.0/profile/inbox.php">
 
-                                                <div class="notif-icon notif-primary">
-                                                    <i class="fa fa-user-plus"></i>
-                                                </div>
+                                        <div class="notif-icon notif-primary">
+                                            <i class="fa fa-user-plus"></i>
+                                        </div>
 
-                                                <div class="notif-content">
-                                                    <span class="block">
-                                                        <?= htmlspecialchars($n['user_name']); ?> registered
-                                                        <!-- data dari DB -->
-                                                    </span>
+                                        <div class="notif-content">
+                                            <span class="block">
+                                                <?= htmlspecialchars($n['user_name']); ?> registered
+                                            </span>
 
-                                                    <span class="time">Waiting admin</span>
-                                                </div>
+                                            <span class="time">
+                                                Open Inbox
+                                            </span>
+                                        </div>
 
-                                            </a>
+                                    </a>
 
-                                        <?php endwhile; ?>
-                                        <!-- END LOOP -->
+                                    <?php endwhile; ?>
 
-                                    <?php else: ?>
-                                        <p class="text-center p-3">No new users</p>
-                                        <!-- jika tiada data -->
-                                    <?php endif; ?>
+                                <?php else: ?>
+
+                                    <p class="text-center p-3">
+                                        No new messages
+                                    </p>
+
+                                <?php endif; ?>
 
                                 </div>
-
                             </div>
+                        </li>
+
+                        <li>
+                            <a class="see-all"
+                            href="/kaiadmin-lite-1.2.0/profile/inbox.php">
+                            View All Inbox
+                            <i class="fa fa-angle-right"></i>
+                            </a>
                         </li>
 
                     </ul>
 
                 </li>
+
                 <?php endif; ?>
                 <!-- ================= NOTIF END ================= -->
 
@@ -245,14 +250,14 @@ if($role == 1){
                                 </a>
                                 belum connect DB -->
 
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="/kaiadmin-lite-1.2.0/profile/inbox.php">
                                     Inbox
                                 </a>
                                 <!-- belum ada backend -->
 
                                 <div class="dropdown-divider"></div>
 
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="/kaiadmin-lite-1.2.0/profile/account-setting.php">
                                     Account Setting
                                 </a>
                                 <!-- belum link sebenar -->

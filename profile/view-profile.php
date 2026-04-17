@@ -254,40 +254,6 @@ $profile = mysqli_fetch_assoc($query) ?? [];
                                     </div>
                                 </div>
 
-
-                                <!-- ===== ACTIVITY ===== -->
-                                <div class="section-title">Activity</div>
-
-                                <div class="info-grid">
-                                    <div class="info-item">
-                                        <div class="info-label">Last Login</div>
-                                        <div class="info-value">
-                                            <?= !empty($profile['last_login']) 
-                                                ? date('d M Y H:i', strtotime($profile['last_login'])) 
-                                                : 'Never'; ?>
-                                        </div>
-                                    </div>
-
-                                    <div class="info-item">
-                                        <div class="info-label">Created</div>
-                                        <div class="info-value">
-                                            <?= !empty($profile['created_at']) 
-                                                ? date('d M Y H:i', strtotime($profile['created_at'])) 
-                                                : '-'; ?>
-                                        </div>
-                                    </div>
-
-                                    <div class="info-item">
-                                        <div class="info-label">Last Updated</div>
-                                        <div class="info-value">
-                                            <?= !empty($profile['updated_at']) 
-                                                ? date('d M Y H:i', strtotime($profile['updated_at'])) 
-                                                : '-'; ?>
-                                        </div>
-                                    </div>
-                                </div>
-
-
                                 <!-- ===== BUTTON ===== -->
                                 <a href="my-profile.php" class="btn btn-kai-dark mt-4 w-100">
                                     Edit Profile

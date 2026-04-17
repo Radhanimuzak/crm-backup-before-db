@@ -437,19 +437,27 @@ while ($row = $result->fetch_assoc()) {
            remember_password disimpan dalam bentuk base64
            → decode guna atob()
         ========================================================= */
-            let users = <?php echo json_encode($users); ?>;
+        let users = <?php echo json_encode($users); ?>;
 
-            document.querySelector("input[name='username']").addEventListener("input", function () {
+        document.querySelector("input[name='username']").addEventListener("input", function () {
 
-                let found = users.find(u => u.user_name === this.value);
+            let found = users.find(u => u.user_name === this.value);
 
-                if (found) {
-                    document.querySelector("input[name='password']").value = atob(found.remember_password);
-                } else {
-                    // jika username tidak dijumpai, kosongkan password
-                    document.querySelector("input[name='password']").value = "";
-                }
-            });
+            if (found && found.remember_password) {
+
+                document.querySelector("input[name='password']").value =
+                    atob(found.remember_password);
+
+                // auto tick checkbox remember
+                document.querySelector("input[name='remember']").checked = true;
+
+            } else {
+
+                document.querySelector("input[name='password']").value = "";
+                document.querySelector("input[name='remember']").checked = false;
+            }
+
+        });
 
     </script>
 

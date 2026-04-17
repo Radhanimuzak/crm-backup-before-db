@@ -31,8 +31,8 @@ session_start();
    - update last login
    - update remember me
 ========================================================= */
-require "../../config/database.php";
-
+require_once(__DIR__ . "/../../config/database.php");
+require_once(__DIR__ . "/../../config/manageData.php");
 /* =========================================================
    STEP 1 — AMBIL INPUT DARI FORM LOGIN
    =========================================================
@@ -72,11 +72,9 @@ $password = $_POST['password'] ?? '';
         ↓
    hasil disimpan di $result
 ========================================================= */
-$stmt = $conn->prepare("SELECT * FROM users WHERE user_name = ?");
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$result = $stmt->get_result();
+require_once(__DIR__ . "/../../config/manageData.php");
 
+$result = selectData($conn, "users", "*", ["user_name" => $username], "s");
 /* =========================================================
    STEP 3 — CEK USER ADA ATAU TIDAK
    =========================================================
@@ -120,7 +118,7 @@ if ($result->num_rows === 1) {
         ========================================================= */
         if ($user['user_status'] !== 'active') {
 
-            $_SESSION['error'] = "Your account is still awaiting administrator approval.";
+            $_SESSION['error'] = "Your account is not active";
             header("Location: ../login.php");
             exit;
         }
@@ -143,21 +141,31 @@ if ($result->num_rows === 1) {
         ========================================================= */
           if (isset($_POST['remember'])) {
 
-          $remember_hash = password_hash($password, PASSWORD_DEFAULT);
+               // encode password supaya boleh autofill balik
+               $remember_password = base64_encode($password);
 
-          $stmt_remember = $conn->prepare("UPDATE users SET remember_password = ? WHERE user_id = ?");
-          $stmt_remember->bind_param("si", $remember_hash, $user['user_id']);
-          $stmt_remember->execute();
+               $stmt_remember = $conn->prepare("
+                    UPDATE users 
+                    SET remember_password = ? 
+                    WHERE user_id = ?
+               ");
 
+               $stmt_remember->bind_param("si", $remember_password, $user['user_id']);
+               $stmt_remember->execute();
+
+               } else {
+
+               // kalau tak tick remember, kosongkan data
+               $stmt_remember = $conn->prepare("
+                    UPDATE users 
+                    SET remember_password = NULL 
+                    WHERE user_id = ?
+               ");
+
+               $stmt_remember->bind_param("i", $user['user_id']);
+               $stmt_remember->execute();
           }
-
-         else {
-
-            $stmt_remember = $conn->prepare("UPDATE users SET remember_password = NULL WHERE user_id = ?");
-            $stmt_remember->bind_param("i", $user['user_id']);
-            $stmt_remember->execute();
-        }
-
+          
         /* =========================================================
            STEP 7 — SET SESSION LOGIN
            =========================================================
